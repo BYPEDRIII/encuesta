@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Epic Games</title>
+    <style>
+        body {
+            font-family: 'Burbank Big Condensed', sans-serif;
+            color: white;
+            background: url('https://wallpaperaccess.com/full/1377702.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            display: none;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        label {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        select, input[type="text"], button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .options input {
+            margin-right: 5px;
+        }
+        button {
+            background-color: #3cb4f3;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1a75d1;
+        }
+        .success-message {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor principal -->
+    <div class="container" id="form-container">
+        <h1>Cuestionario Epic Games</h1>
+        <form id="cuestionario">
+            <!-- Selección de plataforma -->
+            <div class="question">
+                <label for="plataforma">Selecciona tu plataforma:</label>
+                <select id="plataforma" required>
+                    <option value="">-- Elige una opción --</option>
+                    <option value="PS5/PS4">PS5/PS4</option>
+                    <option value="Nintendo">Nintendo</option>
+                    <option value="Android">Android</option>
+                    <option value="iOS">iOS</option>
+                </select>
+            </div>
+
+            <!-- Año de inicio -->
+            <div class="question">
+                <label for="inicio">¿En qué año comenzaste a jugar Fortnite?</label>
+                <select id="inicio" required>
+                    <!-- Opciones generadas dinámicamente con JavaScript -->
+                </select>
+            </div>
+
+            <!-- Preguntas de sí/no -->
+            <div class="question">
+                <label>¿Compraste un pase de batalla?</label>
+                <div class="options">
+                    <label><input type="radio" name="pase_batalla" value="Sí"> Sí</label>
+                    <label><input type="radio" name="pase_batalla" value="No"> No</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <label>¿Has ganado alguna partida?</label>
+                <div class="options">
+                    <label><input type="radio" name="partida_ganada" value="Sí"> Sí</label>
+                    <label><input type="radio" name="partida_ganada" value="No"> No</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <label>¿Juegas con amigos regularmente?</label>
+                <div class="options">
+                    <label><input type="radio" name="juega_amigos" value="Sí"> Sí</label>
+                    <label><input type="radio" name="juega_amigos" value="No"> No</label>
+                </div>
+            </div>
+
+            <!-- Botón de envío -->
+            <button type="button" onclick="enviarCuestionario()">Enviar Cuestionario</button>
+        </form>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    <div class="success-message" id="success-message" style="display: none;">
+        CUESTIONARIO ENVIADO CORRECTAMENTE
+    </div>
+
+    <script>
+        // Generar dinámicamente el selector de años
+        const inicioSelect = document.getElementById('inicio');
+        const yearStart = 2017; // Año de lanzamiento de Fortnite
+        const yearNow = new Date().getFullYear(); // Año actual
+        for (let year = yearStart; year <= yearNow; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            inicioSelect.appendChild(option);
+        }
+
+        // Verificar si el cuestionario ya fue enviado
+        const cuestionarioEnviado = localStorage.getItem('cuestionarioEnviado');
+        if (cuestionarioEnviado) {
+            mostrarMensajeExito();
+        } else {
+            document.getElementById('form-container').style.display = 'block';
+        }
+
+        // Función para manejar el envío del cuestionario
+        function enviarCuestionario() {
+            const plataforma = document.getElementById('plataforma').value;
+            const inicio = inicioSelect.value;
+            const paseBatalla = document.querySelector('input[name="pase_batalla"]:checked');
+            const partidaGanada = document.querySelector('input[name="partida_ganada"]:checked');
+            const juegaAmigos = document.querySelector('input[name="juega_amigos"]:checked');
+
+            if (!plataforma || !inicio || !paseBatalla || !partidaGanada || !juegaAmigos) {
+                alert('Por favor, completa todos los campos.');
+                return;
+            }
+
+            // Guardar estado de envío en localStorage
+            localStorage.setItem('cuestionarioEnviado', 'true');
+            mostrarMensajeExito();
+        }
+
+        // Mostrar el mensaje de éxito
+        function mostrarMensajeExito() {
+            document.getElementById('form-container').style.display = 'none';
+            document.getElementById('success-message').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
